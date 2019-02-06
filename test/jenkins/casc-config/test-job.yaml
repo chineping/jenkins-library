@@ -1,0 +1,19 @@
+jobs:
+  - script: >
+       multibranchPipelineJob('jenkins-library') {
+         branchSources {
+           github {
+             scanCredentialsId('github')
+             repoOwner('meetveracitoy')
+             repository('jenkins-library')
+           }
+         }
+         orphanedItemStrategy {
+           discardOldItems {
+             numToKeep(1)
+           }
+         }
+         triggers {
+           periodic(5)
+         }
+       } 
