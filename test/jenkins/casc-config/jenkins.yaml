@@ -31,9 +31,37 @@ jenkins:
   views:
   - all:
       name: "all"
+tool:
+  maven:
+    installations:
+    - name: "apache-maven-3.6.0"
+      properties:
+          - installSource:
+              installers:
+                - maven:
+                    id: '3.6.0'
+      
 security:
   remotingCLI:
     enabled: false
 unclassified:
   location:
     url: "http://localhost:8080/"
+  
+  globalLibraries:
+    libraries:
+      - name: "jenkins-library"
+        defaultVersion: "master"
+        implicit: true
+        retriever:
+          modernSCM:
+            scm:
+              github:
+                credentialsId: "github"
+                repoOwner: "meetveracity"
+                repository: "jenkins-library"
+                traits:
+                - branchDiscoveryTrait
+                - originPullRequestDiscoveryTrait
+                - forkPullRequestDiscoveryTrait
+

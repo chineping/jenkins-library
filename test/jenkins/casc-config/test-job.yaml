@@ -3,7 +3,7 @@ jobs:
        multibranchPipelineJob('jenkins-library') {
          branchSources {
            github {
-             //scanCredentialsId('github')
+             scanCredentialsId('github')
              repoOwner('meetveracity')
              repository('jenkins-library')
            }
