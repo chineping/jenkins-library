@@ -7,7 +7,7 @@ This pipeline models the "Develop off of master branch" philosophy. All developm
 Create a Jenkins file at the root of your repository like the example below. Add any configuration properties that are needed.
 ```groovy
 mavenPipeline {
-    applicationName = 'os-svc-reference-spring-boot'
+    applicationName = 'sample-app'
 }
 ```
 
