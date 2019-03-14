@@ -20,11 +20,10 @@ The pipeline is triggered under the following scenarios:
 * PR opened against the `master` branch
 * Commit to the `master` branch
 
-
-![Pipeline Image](img/pr-pipeline.png "Pull Request Pipeline")
-
 ## Pull Requests
 When a PR is opened against the `master` branch, this portion of the pipeline is triggered.
+![Pipeline Image](img/pr-pipeline.png "Pull Request Pipeline")
+
 1. **Checkout and Compile Source Code**</br>
 Checkout source code from the PR branch in Github and compile the source code.
 1. **Unit Test Execution**</br>
@@ -44,10 +43,9 @@ Build the application container using `docker build`, tagging it with the PR num
     * End-to-End Integrated Test Environment
 1. **Update PR with build success**</br>
 
-![Pipeline Image](img/master-pipeline.png "Master Branch Pipeline")
-
 ## Commit to Master Branch
-When a commit is made to the `master` branch, this portion of the pipeline is triggered.
+When a commit is made to the `master` branch, this portion of the pipeline is triggered.![Pipeline Image](img/master-pipeline.png "Master Branch Pipeline")
+
 1. **Checkout and Compile Source Code**</br>
 Checkout source code from the PR branch in Github and compile the source code.
 1. **Tag source code**</br>
