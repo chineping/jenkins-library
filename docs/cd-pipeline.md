@@ -51,7 +51,7 @@ Checkout source code from the PR branch in Github and compile the source code.
 1. **Tag source code**</br>
 Determine the next release number and tag the source code with that new release number.
 1. **Execute stages from PR Pipeline**</br>
-Perform all the stages from the PR pipeline using the tagged source code and releasee number.
+Perform all the stages from the [PR pipeline](#Pull-Requests) using the tagged source code and releasee number.
 1. **Deploy to Development and Staging**</br>
 In parallel, deploy the released application container to the development and staging environments. Execute smoke tests to verify the deployments.
 1. **Deploy to Production**</br>
