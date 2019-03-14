@@ -15,8 +15,8 @@ def call(body) {
             stage('Building Containers from Compose file') {
                 when {
                     anyOf {
-                        expression { return fileExists 'docker-compose.yaml' }
-                        expression { return fileExists 'docker-compose.yml' }
+                        expression { return fileExists('docker-compose.yaml') }
+                        expression { return fileExists('docker-compose.yml') }
                     }
                     
                 }
