@@ -21,7 +21,7 @@ def call(body) {
                     
                 }
                 steps {
-                    echo "Building using compose file..."
+                    sh "docker-compose build"
                 }
             }
         }
