@@ -21,10 +21,10 @@ The pipeline is triggered under the following scenarios:
 * Commit to the `master` branch
 
 
-![Pipeline Image](img/pr-pipeline.png "Gitflow Pipeline")
+![Pipeline Image](img/pr-pipeline.png "Pull Request Pipeline")
 
-## Pull Request Pipeline
-When a PR is opened against the `development` branch, this portion of the pipeline is triggered.
+## Pull Requests
+When a PR is opened against the `master` branch, this portion of the pipeline is triggered.
 1. **Checkout and Compile Source Code**</br>
 Checkout source code from the PR branch in Github and compile the source code.
 1. **Unit Test Execution**</br>
@@ -44,4 +44,21 @@ Build the application container using `docker build`, tagging it with the PR num
     * End-to-End Integrated Test Environment
 1. **Update PR with build success**</br>
 
-If any failures occur or quality gates are not passed, the build will be failed and [Notifications](notifications.md) sent out.
+![Pipeline Image](img/master-pipeline.png "Master Branch Pipeline")
+
+## Commit to Master Branch
+When a commit is made to the `master` branch, this portion of the pipeline is triggered.
+1. **Checkout and Compile Source Code**</br>
+Checkout source code from the PR branch in Github and compile the source code.
+1. **Tag source code**</br>
+Determine the next release number and tag the source code with that new release number.
+1. **Execute stages from PR Pipeline**</br>
+Perform all the stages from the PR pipeline using the tagged source code and releasee number.
+1. **Deploy to Development and Staging**</br>
+In parallel, deploy the released application container to the development and staging environments. Execute smoke tests to verify the deployments.
+1. **Deploy to Production**</br>
+Deploy the released application container to the production environment. Execute smoke tests to verify the deployments.
+
+## General Notes
+* If any failures occur or quality gates are not passed, the build will be failed and [Notifications](notifications.md) sent out.
+* All deployments are done using a rolling deployment; introducing the new container instance, verifying its health and then removing the older container instances.
