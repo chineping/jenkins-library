@@ -19,7 +19,7 @@ def call(body) {
         config.dockerHost = env.DOCKER_HOST
     }
     if (config.version == null) {
-        config.version = [env.BRANCH_NAME]
+        config.version = [env.CHANGE_ID]
     }
 
     if (env.BRANCH_NAME == 'master') {
@@ -37,12 +37,25 @@ def call(body) {
             }
         }
         stages {
-            dockerBuild {
-                dockerBuilds = config.dockerBuilds
-                dockerRegistry = config.dockerRegistry
-                dockerRegistryCredentialsId = config.dockerRegistryCredentialsId
-                dockerHost = config.dockerHost
-                tags = this.tags
+            stage('Building Docker Containers') {
+                when {
+                    expression { return config.dockerBuilds != null }
+                }
+                steps {
+                    script {
+                        docker.withServer(config.dockerHost) {
+                            docker.withRegistry(config.dockerRegistry, config.dockerRegistryCredentialsId) {
+                                def builds = [:]
+                                for (image in config.dockerBuilds.keySet()) {
+                                    builds[image] = {
+                                        dockerBuild(image, tags, config.dockerBuilds[image])
+                                    }
+                                }
+                                parallel builds
+                            }
+                        }
+                    }
+                }
             }
         }
     }
