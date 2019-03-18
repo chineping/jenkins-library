@@ -18,10 +18,26 @@ def call(body) {
                         expression { return fileExists('docker-compose.yaml') }
                         expression { return fileExists('docker-compose.yml') }
                     }
-                    
+                    not {
+                        expression { return config.dockerBuilds != null }
+                    }
                 }
                 steps {
                     sh "docker-compose build"
+                }
+            }
+            stage('Publishing Container from Compose file') {
+                when {
+                    anyOf {
+                        expression { return fileExists('docker-compose.yaml') }
+                        expression { return fileExists('docker-compose.yml') }
+                    }
+                    not {
+                        expression { return config.dockerBuilds != null }
+                    }
+                }
+                steps {
+                    sh "docker-compose push"
                 }
             }
         }
