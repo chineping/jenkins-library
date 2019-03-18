@@ -5,6 +5,16 @@ def call(body) {
     body.delegate = config
     body()
 
+    if (config.dockerRegistry == null) {
+        config.dockerRegistry = env.DOCKER_REGISTRY ?: ''
+    }
+    if (config.dockerRegistryCredentialsId == null) {
+        config.dockerRegistryCredentialsId = 'docker-registry'
+    }
+    if (config.dockerHost == null) {
+        config.dockerHost = env.DOCKER_HOST
+    }
+
     pipeline {
         agent {
             node {
@@ -38,8 +48,10 @@ def call(body) {
                 }
                 steps {
                     script {
-                        docker.withRegistry(credentialsId: 'docker-registry') {
-                            sh "docker-compose push"
+                        docker.withServer(config.dockerHost) {
+                            docker.withRegistry(config.dockerRegistry, config.dockerRegistryCredentialsId) {
+                                sh "docker-compose push"
+                            }
                         }
                     }
                 }
