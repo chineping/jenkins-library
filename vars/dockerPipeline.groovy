@@ -48,12 +48,11 @@ def call(body) {
                 }
                 steps {
                     script {
-                        docker.withServer(config.dockerHost) {
-                            docker.withRegistry(config.dockerRegistry, config.dockerRegistryCredentialsId) {
-                                sh "docker-compose push"
-                            }
+                        withCredentials([usernamePassword( credentialsId: dockerRegistryCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh "docker login -u ${USERNAME} -p ${PASSWORD}"
                         }
                     }
+                    sh "docker-compose push"
                 }
             }
         }
