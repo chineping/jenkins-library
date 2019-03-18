@@ -51,6 +51,7 @@ def call(body) {
                                         dockerBuild(image, tags, config.dockerBuilds[image])
                                     }
                                 }
+                                parallel builds
                             }
                         }
                     }
