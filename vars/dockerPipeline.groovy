@@ -19,7 +19,7 @@ def call(body) {
         config.dockerHost = env.DOCKER_HOST
     }
     if (config.version == null) {
-        config.version = [env.CHANGE_ID]
+        config.version = env.BRANCH_NAME
     }
 
     if (env.BRANCH_NAME == 'master') {
