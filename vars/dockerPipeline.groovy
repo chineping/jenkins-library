@@ -37,7 +37,11 @@ def call(body) {
                     }
                 }
                 steps {
-                    sh "docker-compose push"
+                    docker.withServer("${env.DOCKER_HOST}") {
+                        docker.withRegistry("${env.DOCKER_REPOSITORY_URL}", 'docker-repository') {
+                            sh "docker-compose push"
+                        }
+                    }
                 }
             }
         }
