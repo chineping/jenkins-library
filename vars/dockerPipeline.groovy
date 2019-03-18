@@ -48,7 +48,7 @@ def call(body) {
                 }
                 steps {
                     script {
-                        withCredentials([usernamePassword( credentialsId: dockerRegistryCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        withCredentials([usernamePassword( credentialsId: config.dockerRegistryCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                             sh "docker login -u ${USERNAME} -p ${PASSWORD}"
                         }
                     }
