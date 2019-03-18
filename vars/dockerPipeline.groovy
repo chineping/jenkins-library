@@ -19,7 +19,7 @@ def call(body) {
         config.dockerHost = env.DOCKER_HOST
     }
     if (config.version == null) {
-        config.version = [env.CHANGE_ID]
+        config.version = [env.BRANCH_NAME]
     }
 
     if (env.BRANCH_NAME == 'master') {
@@ -27,7 +27,7 @@ def call(body) {
         tags.add('latest') 
     } else {
         //Ignore specified version for non releasable branches
-        tags = [env.CHANGE_ID]
+        tags = [env.BRANCH_NAME]
     }
 
     pipeline {
@@ -37,25 +37,12 @@ def call(body) {
             }
         }
         stages {
-            stage('Building Docker Containers') {
-                when {
-                    expression { return config.dockerBuilds != null }
-                }
-                steps {
-                    script {
-                        docker.withServer(config.dockerHost) {
-                            docker.withRegistry(config.dockerRegistry, config.dockerRegistryCredentialsId) {
-                                def builds = [:]
-                                for (image in config.dockerBuilds.keySet()) {
-                                    builds[image] = {
-                                        dockerBuild(image, tags, config.dockerBuilds[image])
-                                    }
-                                }
-                                parallel builds
-                            }
-                        }
-                    }
-                }
+            dockerBuild {
+                dockerBuilds = config.dockerBuilds
+                dockerRegistry = config.dockerRegistry
+                dockerRegistryCredentialsId = config.dockerRegistryCredentialsId
+                dockerHost = config.dockerHost
+                tags = this.tags
             }
         }
     }
