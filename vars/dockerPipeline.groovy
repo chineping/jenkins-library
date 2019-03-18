@@ -39,7 +39,7 @@ def call(body) {
                 steps {
                     script {
                         docker.withServer("${env.DOCKER_HOST}") {
-                            docker.withRegistry("${env.DOCKER_REPOSITORY_URL}", 'docker-repository') {
+                            docker.withRegistry("${env.DOCKER_REPOSITORY_URL}", 'docker-registry') {
                                 sh "docker-compose push"
                             }
                         }
