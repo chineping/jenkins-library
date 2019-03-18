@@ -5,6 +5,10 @@ def call(body) {
     body.delegate = config
     body()
 
+    if (config.dockerBuilds == null) {
+        error "dockerBuilds parameter was not specified. This is required. Ex: dockerBuilds = [imageName : contextDirectory]"
+    }
+
     if (config.dockerRegistry == null) {
         config.dockerRegistry = env.DOCKER_REGISTRY ?: ''
     }
@@ -14,6 +18,17 @@ def call(body) {
     if (config.dockerHost == null) {
         config.dockerHost = env.DOCKER_HOST
     }
+    if (config.version == null) {
+        config.version = [env.CHANGE_ID]
+    }
+
+    if (env.BRANCH_NAME == 'master') {
+        tags = [config.version]
+        tags.add('latest') 
+    } else {
+        //Ignore specified version for non releasable branches
+        tags = [env.CHANGE_ID]
+    }
 
     pipeline {
         agent {
@@ -22,37 +37,23 @@ def call(body) {
             }
         }
         stages {
-            stage('Building Containers from Compose file') {
+            stage('Building Docker Containers') {
                 when {
-                    anyOf {
-                        expression { return fileExists('docker-compose.yaml') }
-                        expression { return fileExists('docker-compose.yml') }
-                    }
-                    not {
-                        expression { return config.dockerBuilds != null }
-                    }
-                }
-                steps {
-                    sh "docker-compose build"
-                }
-            }
-            stage('Publishing Container from Compose file') {
-                when {
-                    anyOf {
-                        expression { return fileExists('docker-compose.yaml') }
-                        expression { return fileExists('docker-compose.yml') }
-                    }
-                    not {
-                        expression { return config.dockerBuilds != null }
-                    }
+                    expression { return config.dockerBuilds != null }
                 }
                 steps {
                     script {
-                        withCredentials([usernamePassword( credentialsId: config.dockerRegistryCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                            sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+                        docker.withServer(config.dockerHost) {
+                            docker.withRegistry(config.dockerRegistry, config.dockerRegistryCredentialsId) {
+                                def builds = [:]
+                                for (image in config.dockerBuilds.keySet()) {
+                                    builds[image] = {
+                                        dockerBuild(image, tags, config.dockerBuilds[image])
+                                    }
+                                }
+                            }
                         }
                     }
-                    sh "docker-compose push"
                 }
             }
         }
