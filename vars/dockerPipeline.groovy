@@ -29,17 +29,18 @@ def call(body) {
             }
         }
         stages {
-            stage('Checkout Source Code') {
+            stage('Building Docker Containers') {
                 steps {
-                    checkout scm
+                    script {
+                        dockerBuild {
+                            dockerBuilds = config.dockerBuilds
+                            dockerRegistry = config.dockerRegistry
+                            dockerRegistryCredentialsId = config.dockerRegistryCredentialsId
+                            dockerHost = config.dockerHost
+                            version = config.version
+                        }
+                    }
                 }
-            }
-            dockerBuild {
-                dockerBuilds = config.dockerBuilds
-                dockerRegistry = config.dockerRegistry
-                dockerRegistryCredentialsId = config.dockerRegistryCredentialsId
-                dockerHost = config.dockerHost
-                version = config.version
             }
         }
     }

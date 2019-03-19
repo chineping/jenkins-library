@@ -43,24 +43,17 @@ def call(body) {
         tags = [env.BRANCH_NAME]
     }
 
-    stage('Building Docker Containers') {
-        when {
-            expression { return config.dockerBuilds != null }
-        }
-        steps {
-            script {
-                docker.withServer(config.dockerHost) {
-                    docker.withRegistry(config.dockerRegistry, config.dockerRegistryCredentialsId) {
-                        def builds = [:]
-                        for (image in config.dockerBuilds.keySet()) {
-                            builds[image] = {
-                                this.build(image, tags, config.dockerBuilds[image])
-                            }
-                        }
-                        parallel builds
-                    }
+
+    docker.withServer(config.dockerHost) {
+        docker.withRegistry(config.dockerRegistry, config.dockerRegistryCredentialsId) {
+            def builds = [:]
+            for (image in config.dockerBuilds.keySet()) {
+                builds[image] = {
+                    this.build(image, tags, config.dockerBuilds[image])
                 }
             }
+            parallel builds
         }
     }
+
 }
