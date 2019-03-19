@@ -30,7 +30,9 @@ def call(body) {
         }
         stages {
             stage('Checkout Source Code') {
-                checkout scm
+                steps {
+                    checkout scm
+                }
             }
             dockerBuild {
                 dockerBuilds = config.dockerBuilds
