@@ -76,6 +76,22 @@ def call(body) {
                     echo 'Not Yet Implemented...'
                 }
             }
+            stage('Deploy to Staging') {
+                when {
+                    branch 'master' 
+                }
+                steps {
+                    echo 'Not Yet Implemented...'
+                }
+            }
+            stage('Deploy to Production') {
+                when {
+                    branch 'master' 
+                }
+                steps {
+                    echo 'Not Yet Implemented...'
+                }
+            }
         }
     }
 }
