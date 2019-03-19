@@ -7,13 +7,6 @@ def call(body) {
     body.delegate = config
     body()
 
-    if (config.applicationName == null) {
-        error "applicationName parameter must be specified in pipeline configuration"
-    }
-    if (config.dockerContext == null) {
-        config.dockerContext = '.'
-    }
-
     pipeline {
         agent {
             node {
@@ -55,16 +48,68 @@ def call(body) {
                     }
                 }
             }
-            dockerBuild {
-                dockerBuilds = config.dockerBuilds
+            stage('Building Docker Containers') {
+                steps {
+                    script {
+                        dockerBuild {
+                            dockerBuilds = config.dockerBuilds
+                            dockerRegistry = config.dockerRegistry
+                            dockerRegistryCredentialsId = config.dockerRegistryCredentialsId
+                            dockerHost = config.dockerHost
+                            version = config.version
+                        }
+                    }
+                }
             }
 
-            stage('Promote to Production') {
+            stage('Testing') {
+                parallel {
+                    stage('Functional Testing') {
+                        when {
+                            not {
+                                branch 'master'
+                            }  
+                        }
+                        steps {
+                            echo 'Not Yet Implemented...'
+                        }
+                    }
+                    stage('Performance Testing') {
+                        when {
+                            not {
+                                branch 'master'
+                            }  
+                        }
+                        steps {
+                            echo 'Not Yet Implemented...'
+                        }
+                    }
+                }
+            }
+            stage('Deploy Review Instance') {
                 when {
-                    branch 'master'  
+                    not {
+                        branch 'master'
+                    }  
                 }
                 steps {
-                    echo 'Running Master Branch Pipeline'
+                    echo 'Not Yet Implemented...'
+                }
+            }
+            stage('Deploy to Staging') {
+                when {
+                    branch 'master' 
+                }
+                steps {
+                    echo 'Not Yet Implemented...'
+                }
+            }
+            stage('Deploy to Production') {
+                when {
+                    branch 'master' 
+                }
+                steps {
+                    echo 'Not Yet Implemented...'
                 }
             }
         }
