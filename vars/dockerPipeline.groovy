@@ -42,6 +42,40 @@ def call(body) {
                     }
                 }
             }
+            stage('Testing') {
+                parallel {
+                    stage('Functional Testing') {
+                        when {
+                            not {
+                                branch 'master'
+                            }  
+                        }
+                        steps {
+                            echo 'Not Yet Implemented...'
+                        }
+                    }
+                    stage('Performance Testing') {
+                        when {
+                            not {
+                                branch 'master'
+                            }  
+                        }
+                        steps {
+                            echo 'Not Yet Implemented...'
+                        }
+                    }
+                }
+            }
+            stage('Deploy Review Instance') {
+                when {
+                    not {
+                        branch 'master'
+                    }  
+                }
+                steps {
+                    echo 'Not Yet Implemented...'
+                }
+            }
         }
     }
 }
