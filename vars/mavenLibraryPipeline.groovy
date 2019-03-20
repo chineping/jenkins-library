@@ -14,7 +14,7 @@ def call(body) {
             }
         }
         stages {
-            stage('Building Application') {
+            stage('Building Library') {
                 steps {
                     script {
                         def pom = readMavenPom file: "pom.xml"
@@ -43,7 +43,7 @@ def call(body) {
                             }
                         }
                     }
-                    stage('Secure Scanning') {
+                    stage('Security Scanning') {
                         steps {
                             echo "TBD..."
                         }
