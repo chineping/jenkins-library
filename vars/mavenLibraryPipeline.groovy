@@ -54,7 +54,7 @@ def call(body) {
                 }
                 steps {
                     withMaven() {
-                        sh "${mvnCmd} deploy:deploy"
+                        sh "${mvnCmd} -DskipTests deploy"
                     }
                 }
             }
