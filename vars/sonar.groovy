@@ -21,6 +21,12 @@ def scan() {
     withSonarQubeEnv('sonarqube') {
         sh "mvn sonar:sonar"
     }
+    timeout(time: 3, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
+        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+        if (qg.status != 'OK') {
+            error "Pipeline aborted due to Sonar quality gate failure: ${qg.status}"
+        }
+    }
 }
 
 def call() {
@@ -28,11 +34,5 @@ def call() {
         this.prScan()
     } else {
         this.scan()
-    }
-    timeout(time: 3, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
-        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-        if (qg.status != 'OK') {
-            error "Pipeline aborted due to Sonar quality gate failure: ${qg.status}"
-        }
     }
 }
