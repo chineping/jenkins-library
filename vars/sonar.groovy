@@ -1,5 +1,5 @@
 /*
-Function to build and push a docker image. Applies all given tags to the image.
+Function to run sonar scan on PR code and put the results into the PR.
 */
 def prScan() {
     withSonarQubeEnv('sonarqube') {
@@ -8,12 +8,15 @@ def prScan() {
         def orgName = scm.getUserRemoteConfigs()[0].getUrl().tokenize('/')[-2]
         def repo =  "${orgName}/${repoName}"
         //Use Preview mode for PRs
-        withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN')]) {
+        withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
             sh "mvn -X -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN}  -Dsonar.github.repository=${repo} sonar:sonar"
         }
     }
 }
 
+/*
+Function to run a sonar scan on source code and publish results to Sonar server
+*/
 def scan() {
     withSonarQubeEnv('sonarqube') {
         sh "mvn sonar:sonar"
