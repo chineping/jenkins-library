@@ -38,7 +38,9 @@ def call(body) {
                 parallel {
                     stage('Sonar Analysis') {
                         steps {
-                            echo "Running Sonar Analysis..."
+                            script {
+                                sonar()
+                            }
                         }
                     }
                     stage('Secure Scanning') {
