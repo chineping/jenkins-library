@@ -19,7 +19,7 @@ Function to run a sonar scan on source code and publish results to Sonar server
 */
 def scan() {
     withSonarQubeEnv('sonarqube') {
-        sh "mvn sonar:sonar"
+        sh "mvn -Dsonar.webhooks.project=${env.JENKINS_URL}/sonarqube-webhook/ sonar:sonar"
     }
     timeout(time: 3, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
         def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
