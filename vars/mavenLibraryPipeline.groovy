@@ -52,7 +52,9 @@ def call(body) {
             }
             stage('Deploy to Repository') {
                 when {
-                    branch 'master'
+                    not {
+                        changeRequest()
+                    }
                 }
                 steps {
                     withMaven() {
